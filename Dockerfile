@@ -150,9 +150,35 @@ FROM bench AS bench-test
 
 # Print version and verify bashrc is properly sourced so that everything works
 # in the interactive shell and Dockerfile
-RUN && pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple \
+RUN pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple \
     && yarn config set registry https://registry.npmmirror.com \
-    && npm config set registry https://registry.npmmirror.com
+    && npm config set registry https://registry.npmmirror.com \
+    && cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.bak \
+    && sudo tee /etc/apt/sources.list.d/debian.sources > /dev/null <<EOL
+    Types: deb
+    URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
+    Suites: bookworm bookworm-updates bookworm-backports
+    Components: main contrib non-free non-free-firmware
+    Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+    
+    # Types: deb-src
+    # URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
+    # Suites: bookworm bookworm-updates bookworm-backports
+    # Components: main contrib non-free non-free-firmware
+    # Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+    
+    Types: deb
+    URIs: https://mirrors.tuna.tsinghua.edu.cn/debian-security
+    Suites: bookworm-security
+    Components: main contrib non-free non-free-firmware
+    Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+    
+    # Types: deb-src
+    # URIs: https://mirrors.tuna.tsinghua.edu.cn/debian-security
+    # Suites: bookworm-security
+    # Components: main contrib non-free non-free-firmware
+    # Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+    EOL
 
 RUN node --version \
     && npm --version \
