@@ -150,7 +150,8 @@ FROM bench AS bench-test
 
 # Print version and verify bashrc is properly sourced so that everything works
 # in the interactive shell and Dockerfile
-RUN pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple \
+RUN python -m pip install --upgrade pip \
+    && pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple \
     && yarn config set registry https://registry.npmmirror.com \
     && npm config set registry https://registry.npmmirror.com
 
