@@ -110,8 +110,7 @@ RUN git clone --depth 1 https://github.com/pyenv/pyenv.git .pyenv \
     && pyenv global $PYTHON_VERSION $PYTHON_VERSION_v15 \
     && sed -Ei -e '/^([^#]|$)/ {a export PYENV_ROOT="/home/frappe/.pyenv" a export PATH="$PYENV_ROOT/bin:$PATH" a ' -e ':a' -e '$!{n;ba};}' ~/.profile \
     && echo 'eval "$(pyenv init --path)"' >>~/.profile \
-    && echo 'eval "$(pyenv init -)"' >>~/.bashrc \
-    && pip install --upgrade pip
+    && echo 'eval "$(pyenv init -)"' >>~/.bashrc
 
 # Clone and install bench in the local user home directory
 # For development, bench source is located in ~/.bench
