@@ -2,8 +2,14 @@
 import argparse
 import os
 import subprocess
+import logging
 
-
+logging.basicConfig(
+	filename="develop-installer.log",
+	filemode="w",
+	format="%(asctime)s - %(levelname)s - %(message)s",
+	level=logging.INFO,
+)
 def cprint(*args, level: int = 1):
     """
     logs colorful messages
@@ -119,23 +125,27 @@ def get_args_parser():
 def init_bench_if_not_exist(args):
     if os.path.exists(args.bench_name):
         cprint("Bench already exists. Only site will be created", level=3)
+        logging.info("Bench already exists. Only site will be created")
         return
     try:
         env = os.environ.copy()
         if args.py_version:
             env["PYENV_VERSION"] = args.py_version
+            logging.info(f"Using python version: {args.py_version}")
         init_command = ""
         if args.node_version:
             init_command = f"nvm use {args.node_version};"
+            logging.info(f"Using node version: {args.node_version}")
         if args.py_version:
             init_command += f"PYENV_VERSION={args.py_version} "
         init_command += "bench init "
-        init_command += "--skip-redis-config-generation "
+        init_command += "--skip-redis-config-generation --dev "
         init_command += "--verbose " if args.verbose else " "
         init_command += f"--frappe-path={args.frappe_repo} "
         init_command += f"--frappe-branch={args.frappe_branch} "
         init_command += f"--apps_path={args.apps_json} "
         init_command += args.bench_name
+        logging.info(init_command)
         command = [
             "/bin/bash",
             "-i",
@@ -144,6 +154,8 @@ def init_bench_if_not_exist(args):
         ]
         subprocess.call(command, env=env, cwd=os.getcwd())
         cprint("Configuring Bench ...", level=2)
+        logging.info("Configuring Bench ...")
+        
         cprint("Set db_host", level=3)
         if args.db_type:
             cprint(f"Setting db_type to {args.db_type}", level=3)
@@ -233,6 +245,7 @@ def create_site_in_bench(args):
         new_site_cmd.append(f"--install-app={app}")
     new_site_cmd.append(args.site_name)
     cprint(f"Creating Site {args.site_name} ...", level=2)
+    logging.info(new_site_cmd)
     subprocess.call(
         new_site_cmd,
         cwd=os.getcwd() + "/" + args.bench_name,
@@ -241,3 +254,5 @@ def create_site_in_bench(args):
 
 if __name__ == "__main__":
     main()
+
+#python installer.py -j apps.json -p 3.11.6 -n 20.18.0 -s dev.example.com -a admin -b bench-develop

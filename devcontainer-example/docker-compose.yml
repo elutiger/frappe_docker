@@ -45,7 +45,7 @@ services:
     platform: linux/amd64
 
   frappe:
-    image: docker.io/frappe/bench:latest
+    image: docker.io/frappe/bench:latest  # NOTE:should rebuild the bench image for your changes, have any question please contact Tiger by elutiger@qq.com
     platform: linux/amd64
     command: sleep infinity
     environment:
