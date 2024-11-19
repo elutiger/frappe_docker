@@ -10,6 +10,7 @@ development/*
 !development/apps-example.json
 !development/vscode-example/
 !development/easy-install.py
+!development/install/
 # Pycharm
 .idea
 
